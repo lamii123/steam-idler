@@ -142,6 +142,22 @@ test('re-idling a connected account updates the apps without a second client', a
   sessions.shutdownAll();
 });
 
+test('re-idling with a different game list restarts the elapsed timer', async () => {
+  const sessions = connect();
+
+  const first = await sessions.start(STEAM_ID, 'refresh-token', [730]);
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  const second = await sessions.start(STEAM_ID, 'refresh-token', [440]);
+
+  assert.ok(second.since > first.since, 'a new game list starts a new timer');
+  assert.equal(sessions.status(STEAM_ID).since, second.since);
+
+  const repeat = await sessions.start(STEAM_ID, 'refresh-token', [440]);
+  assert.equal(repeat.since, second.since, 'repeating the same list keeps the timer');
+
+  sessions.shutdownAll();
+});
+
 test('resumeAll starts sessions with the module start by default', async () => {
   const sessions = connect();
 

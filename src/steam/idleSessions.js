@@ -54,6 +54,11 @@ function createIdleSessions({ SteamUser: SteamUserClass = SteamUser, logger: log
     return cleaned;
   }
 
+  function sameAppIds(left, right) {
+    if (!Array.isArray(left) || !Array.isArray(right)) return false;
+    return left.length === right.length && left.every((id, index) => id === right[index]);
+  }
+
   function describe(entry, reason) {
     if (!entry) {
       return {
@@ -235,6 +240,11 @@ function createIdleSessions({ SteamUser: SteamUserClass = SteamUser, logger: log
     const existing = clients.get(steamId);
 
     if (existing && existing.status === 'online') {
+      // A different game list starts a new timer for the UI; repeating the same
+      // list keeps the running one, so a duplicate request does not reset it.
+      if (!sameAppIds(existing.appIds, cleanAppIds)) {
+        existing.since = Date.now();
+      }
       existing.appIds = cleanAppIds;
       existing.stopAt = stopAt;
       existing.appearOnline = appearOnline;
