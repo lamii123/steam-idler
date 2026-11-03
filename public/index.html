@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0f1419" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)" />
+  <meta name="description" content="Self-hosted Steam idle panel. Connect with the Steam Mobile app and keep your playtime ticking." />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Steam Idle</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="stylesheet" href="/css/controls.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link rel="stylesheet" href="/css/game.css" />
+  <link rel="stylesheet" href="/css/library.css" />
+  <link rel="stylesheet" href="/css/loading.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <noscript><p class="noscript">This app requires JavaScript.</p></noscript>
+
+  <main class="wrap" id="main">
+    <section class="card" id="connectCard" aria-labelledby="connectTitle">
+      <h1 id="connectTitle">Connect your Steam account</h1>
+
+      <div class="tab-bar" role="tablist" aria-label="Login method">
+        <button
+          class="tab active"
+          id="tabQr"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="qrSection"
+          tabindex="0"
+        >QR Code</button>
+        <button
+          class="tab"
+          id="tabPassword"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="passwordSection"
+          tabindex="-1"
+        >Password</button>
+      </div>
+
+      <div class="login-section" id="qrSection" role="tabpanel" aria-labelledby="tabQr" tabindex="0">
+        <div class="qr-frame">
+          <span class="qr-frame__corner qr-frame__corner--tl" aria-hidden="true"></span>
+          <span class="qr-frame__corner qr-frame__corner--tr" aria-hidden="true"></span>
+          <span class="qr-frame__corner qr-frame__corner--bl" aria-hidden="true"></span>
+          <span class="qr-frame__corner qr-frame__corner--br" aria-hidden="true"></span>
+          <img id="qrImage" alt="Steam login QR code" width="240" height="240" />
+        </div>
+
+        <p class="status-line" id="qrStatus" role="status" aria-live="polite">Generating code…</p>
+        <button class="btn btn--ghost" id="qrRefreshBtn" type="button" hidden>Get a new code</button>
+        <p class="fineprint" id="qrError" role="alert"></p>
+      </div>
+
+      <div class="login-section" id="passwordSection" role="tabpanel" aria-labelledby="tabPassword" tabindex="0" hidden>
+        <form id="passwordForm" autocomplete="on">
+          <label class="field-label" for="accountNameInput">Account name</label>
+          <input
+            id="accountNameInput"
+            class="input"
+            type="text"
+            name="username"
+            autocomplete="username"
+            autocapitalize="none"
+            autocorrect="off"
+            spellcheck="false"
+            maxlength="64"
+            placeholder="your_account_name"
+          />
+
+          <label class="field-label" for="passwordInput">Password</label>
+          <input
+            id="passwordInput"
+            class="input"
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            maxlength="256"
+            placeholder="Your Steam password"
+          />
+
+          <div id="guardSection" class="guard-section" hidden>
+            <p class="fineprint guard-hint" id="guardHint"></p>
+            <label class="field-label" for="guardCodeInput">Steam Guard code</label>
+            <input
+              id="guardCodeInput"
+              class="input"
+              type="text"
+              name="one-time-code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              autocapitalize="characters"
+              spellcheck="false"
+              placeholder="5-digit code"
+              maxlength="8"
+            />
+          </div>
+
+          <p class="status-line" id="passwordStatus" role="status" aria-live="polite"></p>
+          <button class="btn btn--primary btn--block" type="submit" id="passwordSubmitBtn">Sign in</button>
+        </form>
+      </div>
+
+      <p class="fineprint">
+        Session tokens expire after <strong>7 days</strong>. No passwords are stored.
+      </p>
+    </section>
+
+    <div id="dashboardCard" hidden>
+      <div class="loading-container" id="dashboardLoader" role="status" aria-live="polite" aria-busy="true">
+        <div class="momentum" aria-hidden="true"></div>
+        <span class="loading-text">Loading profile…</span>
+      </div>
+
+      <section class="card" aria-labelledby="profileHeading">
+        <h2 class="visually-hidden" id="profileHeading">Steam profile</h2>
+        <div class="profile-header">
+          <div class="profile-avatar-wrap">
+            <img class="profile-avatar" id="profileAvatar" alt="" width="80" height="80" />
+          </div>
+
+          <div class="profile-info">
+            <div class="profile-name-row">
+              <a class="profile-name" id="profileName" href="#" target="_blank" rel="noopener noreferrer">—</a>
+              <span class="status-pill status-pill--offline" id="statusPill" role="status" aria-live="polite">
+                <span class="status-pill__dot" aria-hidden="true"></span>
+                <span id="statusPillLabel">Idler offline</span>
+              </span>
+            </div>
+            <div class="profile-meta">
+              <span class="profile-level" id="profileLevel"></span>
+              <span id="profileStats"></span>
+            </div>
+          </div>
+
+          <button class="btn btn--ghost btn--small" id="disconnectBtn" type="button">Disconnect</button>
+        </div>
+      </section>
+
+      <section class="card current-game" id="currentGameBlock" aria-labelledby="currentGameHeading" hidden>
+        <h2 class="visually-hidden" id="currentGameHeading">Current idle session</h2>
+        <div class="current-game__info">
+          <img class="current-game__thumb" id="currentGameThumb" alt="" width="120" height="45" />
+          <div class="current-game__text">
+            <p class="current-game__name" id="currentGameName">—</p>
+            <p class="current-game__meta" id="currentGameMeta"></p>
+          </div>
+        </div>
+        <div class="current-game__timer">
+          <div class="current-game__left">
+            <div class="odometer" id="odometer" aria-label="Idle timer">00:00:00</div>
+            <div class="odometer-label" id="odometerLabel">Remaining</div>
+          </div>
+          <button class="btn btn--danger" id="stopBtn" type="button">Stop</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="libraryHeading">
+        <div class="library">
+          <div class="library__header">
+            <span class="eyebrow" id="libraryHeading">Game Library</span>
+            <span class="library__count" id="libraryCount" role="status" aria-live="polite"></span>
+          </div>
+
+          <div class="idle-bar">
+            <div class="idle-bar__presets" id="durationPresets" role="group" aria-label="Idle duration">
+              <button class="preset active" data-duration="0" type="button" aria-pressed="true">Unlimited</button>
+              <button class="preset" data-duration="1800000" type="button" aria-pressed="false">30m</button>
+              <button class="preset" data-duration="3600000" type="button" aria-pressed="false">1h</button>
+              <button class="preset" data-duration="7200000" type="button" aria-pressed="false">2h</button>
+              <button class="preset" data-duration="14400000" type="button" aria-pressed="false">4h</button>
+              <button class="preset" data-duration="28800000" type="button" aria-pressed="false">8h</button>
+            </div>
+            <label class="toggle-label">
+              <input type="checkbox" id="personaToggle" checked />
+              <span>Appear online</span>
+            </label>
+            <div class="view-toggle" id="viewToggle" role="group" aria-label="Library view">
+              <button class="view-toggle__btn active" data-view="grid" type="button" title="Grid view" aria-label="Grid view" aria-pressed="true">
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+              </button>
+              <button class="view-toggle__btn" data-view="list" type="button" title="List view" aria-label="List view" aria-pressed="false">
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <label class="visually-hidden" for="gameSearch">Search games by name or App ID</label>
+          <input
+            id="gameSearch"
+            class="input game-search"
+            type="search"
+            placeholder="Search games or App IDs… (Press / to focus)"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+          />
+
+          <div class="library__scroll">
+            <div class="library__grid" id="libraryGrid" role="list" aria-label="Game library"></div>
+          </div>
+          <ul class="library__list" id="libraryList" aria-label="Game library" hidden></ul>
+          <p class="fineprint library-empty" id="libraryEmpty" role="status" hidden>No games found.</p>
+        </div>
+
+        <p class="status-line" id="idleError" role="alert"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>Self-hosted Steam idler · Not affiliated with Valve</span>
+  </footer>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

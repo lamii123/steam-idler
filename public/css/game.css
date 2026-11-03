@@ -1,0 +1,139 @@
+.current-game {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card) 100%);
+  border: 1px solid rgba(var(--user-accent-rgb), 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.current-game::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  background: radial-gradient(circle at 100% 0%, rgba(var(--user-accent-rgb), 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.current-game__info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  position: relative;
+  z-index: 1;
+}
+
+.current-game__thumb {
+  width: 140px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: var(--bg-base);
+  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+.current-game__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.current-game__name {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin: 0 0 var(--space-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.3px;
+}
+
+.current-game__meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+  font-family: var(--font-family);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.current-game__timer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 1;
+}
+
+.current-game__timer[hidden] {
+  display: none;
+}
+
+.current-game__left {
+  flex: 1;
+}
+
+.odometer {
+  font-family: var(--font-family);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  display: block;
+  margin-bottom: var(--space-sm);
+  line-height: 1;
+}
+
+.odometer-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .current-game__info {
+    gap: var(--space-md);
+  }
+
+  .current-game__thumb {
+    width: 100px;
+    height: 37px;
+  }
+
+  .current-game__name {
+    font-size: var(--text-base);
+  }
+
+  .odometer {
+    font-size: var(--text-3xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .current-game__timer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .current-game__thumb {
+    width: 80px;
+    height: 30px;
+  }
+
+  .odometer {
+    font-size: var(--text-2xl);
+  }
+
+  .btn--danger {
+    width: 100%;
+  }
+}

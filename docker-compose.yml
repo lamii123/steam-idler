@@ -1,0 +1,23 @@
+services:
+  steam-idler:
+    build: .
+    image: steam-idler:local
+    container_name: steam-idler
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+      DATA_DIR: /app/data
+      # Direct port mapping: there is no reverse proxy, so do not trust
+      # X-Forwarded-For. Set this to 1 if you put nginx/Caddy in front.
+      TRUST_PROXY: "0"
+    volumes:
+      - ./data:/app/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
