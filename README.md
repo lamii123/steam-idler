@@ -2,8 +2,7 @@
 
 A small, self-hosted web panel that farms Steam hours. Sign in with
 the Steam Mobile app (QR) or with your account name and password, pick games
-from your library, and let the server report them as running. Host it on a vps or in a homelab.
-
+from your library, and let the server report them as running.
 Built with Node.js 22, Express 5, and the [`steam-user`](https://www.npmjs.com/package/steam-user)
 and [`steam-session`](https://www.npmjs.com/package/steam-session) packages. The
 frontend is plain HTML, CSS, and ES modules — no build step.
@@ -27,21 +26,36 @@ frontend is plain HTML, CSS, and ES modules — no build step.
 
 ## Screenshots
 
-### Dashboard
+Die Screenshots sind eingeklappt und werden erst angezeigt, wenn du den jeweiligen
+Bereich öffnest.
+
+<details>
+<summary>Dashboard</summary>
 
 ![Dashboard with the Steam profile and game library](docs/screenshots/dashboard.png)
 
-### List view
+</details>
+
+<details>
+<summary>Compact Dashboard</summary>
 
 ![Game library in virtualised list view](docs/screenshots/list-view.png)
 
-### Idling
+</details>
+
+<details>
+<summary>Active session </summary>
 
 ![Active idle session with the elapsed timer](docs/screenshots/idling.png)
 
-### Sign in
+</details>
+
+<details>
+<summary>Login screen</summary>
 
 ![QR login with the Steam Mobile app](docs/screenshots/sign-in.png)
+
+</details>
 
 ## Requirements
 
@@ -53,7 +67,7 @@ frontend is plain HTML, CSS, and ES modules — no build step.
 ## Quick start
 
 ```bash
-git clone <your-fork-url> steam-idler
+git clone https://github.com/lamii123/steam-idler.git
 cd steam-idler
 npm ci
 cp .env.example .env
