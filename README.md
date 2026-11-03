@@ -25,10 +25,6 @@ frontend is plain HTML, CSS, and ES modules — no build step.
 - Debounced, atomic JSON persistence — no database required
 
 ## Screenshots
-
-Die Screenshots sind eingeklappt und werden erst angezeigt, wenn du den jeweiligen
-Bereich öffnest.
-
 <details>
 <summary>Dashboard</summary>
 
