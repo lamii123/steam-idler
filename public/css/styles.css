@@ -14,6 +14,7 @@
   --accent-hover: #5da9ff;
   --accent-light: rgba(74, 158, 255, 0.1);
   --accent-border: rgba(74, 158, 255, 0.2);
+  --accent-text: #4a9eff;
 
   --status-online: #43d65f;
   --status-online-bg: rgba(67, 214, 95, 0.1);
@@ -93,6 +94,9 @@
     --text-secondary: #5a646d;
     --text-tertiary: #7a8490;
     --text-muted: #a8b1ba;
+
+    /* Accent used as text: the dark-mode blue is too light on white. */
+    --accent-text: #1d4ed8;
 
     --border-faint: rgba(15, 20, 25, 0.06);
     --border-subtle: rgba(15, 20, 25, 0.08);
